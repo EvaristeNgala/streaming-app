@@ -1,6 +1,7 @@
 // src/pages/SplashScreen.js
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Logo from "./lvblas.png"; // ⚡ ici on importe le logo depuis le même dossier
 
 function SplashScreen() {
   const navigate = useNavigate();
@@ -25,12 +26,12 @@ function SplashScreen() {
     >
       {/* Logo dans un cercle */}
       <img
-        src="/lvblas.png" // Mets ton logo dans public/lvblas.png
+        src={Logo} // ⚡ utilisation de l'import
         alt="Logo"
         style={{
           width: "120px",
           height: "120px",
-          borderRadius: "50%", // ⚡ cercle
+          borderRadius: "50%", // cercle
           animation: "pulse 2s infinite",
         }}
       />

@@ -1,12 +1,14 @@
 // src/pages/Series.js
 import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, getDocs } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 
 export default function Series() {
   const [series, setSeries] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let unsubscribe = () => {};
@@ -49,7 +51,6 @@ export default function Series() {
     };
   }, []);
 
-  // recherche case-insensitive sur title et description
   const normalized = (s) => (s || "").toString().toLowerCase();
   const filtered = series.filter(
     (s) =>
@@ -59,7 +60,6 @@ export default function Series() {
 
   return (
     <div style={{ background: "#121212", minHeight: "100vh", color: "#fff", padding: 20 }}>
-      {/* barre de recherche sticky dans un div avec fond */}
       <div
         style={{
           position: "sticky",
@@ -106,12 +106,10 @@ export default function Series() {
                 background: "#181818",
                 borderRadius: 8,
                 overflow: "hidden",
-                cursor: serie.videoUrl ? "pointer" : "default",
+                cursor: "pointer",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
               }}
-              onClick={() => {
-                if (serie.videoUrl) window.open(serie.videoUrl, "_blank", "noopener");
-              }}
+              onClick={() => navigate(`/detail/series/${serie.id}`)}
             >
               <div style={{ width: "100%", height: 220, background: "#222" }}>
                 {serie.imageUrl ? (

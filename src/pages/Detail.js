@@ -18,34 +18,43 @@ export default function Detail() {
     const fetchData = async () => {
       try {
         if (type === "movie") {
+          // Film
           const docRef = doc(db, "movies", id);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) setItem({ id: docSnap.id, ...docSnap.data() });
 
-          // charger tous les films
           const moviesSnap = await getDocs(collection(db, "movies"));
-          setAllMovies(moviesSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+          setAllMovies(moviesSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
         } else if (type === "series") {
+          // Série
           const snap = await getDocs(collection(db, "series"));
-          const seriesList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          const seriesList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 
-          seriesList.forEach(data => {
+          let found = false;
+          seriesList.forEach((data) => {
             if (data.seasons) {
-              data.seasons.forEach(season => {
+              data.seasons.forEach((season) => {
                 if (season.episodes) {
-                  season.episodes.forEach(ep => {
+                  season.episodes.forEach((ep) => {
                     if (ep.id === id) {
-                      setItem({
-                        ...data,
-                        selectedEpisode: ep,
-                      });
-                      setSelectedSeason(data.seasons[0]); // saison par défaut
+                      setItem({ ...data, selectedEpisode: ep });
+                      setSelectedSeason(data.seasons[0] || null);
+                      found = true;
                     }
                   });
                 }
               });
             }
           });
+
+          if (!found) {
+            // Si l'id correspond à la série entière
+            const seriesItem = seriesList.find((s) => s.id === id) || null;
+            setItem(seriesItem);
+            if (seriesItem?.seasons?.length > 0) {
+              setSelectedSeason(seriesItem.seasons[0]);
+            }
+          }
         }
       } catch (err) {
         console.error(err);
@@ -59,20 +68,9 @@ export default function Detail() {
   if (loading) return <p style={{ color: "#fff" }}>Chargement...</p>;
   if (!item) return <p style={{ color: "#fff" }}>Film ou série introuvable</p>;
 
-  // Styles
   const styles = {
-    heroWrapper: {
-      position: "relative",
-      width: "100%",
-      height: "300px",
-      overflow: "hidden",
-    },
-    hero: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      display: "block",
-    },
+    heroWrapper: { position: "relative", width: "100%", height: "300px", overflow: "hidden" },
+    hero: { width: "100%", height: "100%", objectFit: "cover", display: "block" },
     backButton: {
       position: "absolute",
       top: "16px",
@@ -85,7 +83,7 @@ export default function Detail() {
       cursor: "pointer",
       fontSize: "18px",
     },
-    playButtonOverlay: {
+    playButtonCenter: {
       position: "absolute",
       top: "50%",
       left: "50%",
@@ -102,30 +100,10 @@ export default function Detail() {
       fontSize: "28px",
       color: "#fff",
     },
-    container: {
-      color: "#fff",
-      backgroundColor: "#121212",
-      minHeight: "100vh",
-      padding: "16px",
-    },
-    moviesGrid: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "16px",
-      marginTop: "20px",
-    },
-    movieCard: {
-      background: "#1e1e1e",
-      borderRadius: "8px",
-      overflow: "hidden",
-      cursor: "pointer",
-    },
-    movieImage: {
-      width: "100%",
-      height: "180px",
-      objectFit: "cover",
-      display: "block",
-    },
+    container: { color: "#fff", backgroundColor: "#121212", minHeight: "100vh", padding: "10px", paddingTop: "-20px" },
+    moviesGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "20px" },
+    movieCard: { background: "#1e1e1e", borderRadius: "8px", overflow: "hidden", cursor: "pointer" },
+    movieImage: { width: "100%", height: "180px", objectFit: "cover", display: "block" },
     episodeCard: {
       display: "flex",
       alignItems: "center",
@@ -135,19 +113,8 @@ export default function Detail() {
       padding: "10px",
       position: "relative",
     },
-    episodeImageWrapper: {
-      position: "relative",
-      width: "200px",
-      height: "120px",
-      flexShrink: 0,
-      marginRight: "12px",
-    },
-    episodeImage: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      borderRadius: "6px",
-    },
+    episodeImageWrapper: { position: "relative", width: "150px", height: "100px", flexShrink: 0, marginRight: "12px" },
+    episodeImage: { width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" },
     playBtnOverlay: {
       position: "absolute",
       top: "50%",
@@ -177,143 +144,93 @@ export default function Detail() {
       alignItems: "center",
       zIndex: 1000,
     },
-    video: {
-      width: "80%",
-      height: "70%",
-      background: "#000",
-    },
-    closeBtn: {
-      position: "absolute",
-      top: "20px",
-      right: "20px",
-      fontSize: "24px",
-      color: "#fff",
-      background: "transparent",
-      border: "none",
-      cursor: "pointer",
-    },
+    video: { width: "80%", height: "70%", background: "#000" },
+    closeBtn: { position: "absolute", top: "20px", right: "20px", fontSize: "24px", color: "#fff", background: "transparent", border: "none", cursor: "pointer" },
   };
 
   return (
     <>
-      {/* Modal vidéo (iframe Uqload) */}
       {videoUrl && (
         <div style={styles.modal}>
-          <button style={styles.closeBtn} onClick={() => setVideoUrl(null)}>
-            ✖
-          </button>
+          <button style={styles.closeBtn} onClick={() => setVideoUrl(null)}>✖</button>
           <iframe
             src={videoUrl}
             style={styles.video}
             frameBorder="0"
             allow="autoplay; fullscreen"
             allowFullScreen
+            title="video"
           ></iframe>
         </div>
       )}
 
-      {type === "movie" ? (
-        <div>
-          <div style={styles.heroWrapper}>
-            <img src={item.imageUrl} alt={item.title} style={styles.hero} />
-            <button style={styles.backButton} onClick={() => navigate(-1)}>
-              ←
-            </button>
-            {item.videoUrl && (
-              <button
-                style={styles.playButtonOverlay}
-                onClick={() => setVideoUrl(item.videoUrl)}
-              >
-                ▶
-              </button>
-            )}
-          </div>
-          <div style={styles.container}>
-            <h1>{item.title}</h1>
-            <p>{item.description}</p>
+      <div>
+        <div style={styles.heroWrapper}>
+          <img src={item.imageUrl} alt={item.title} style={styles.hero} />
+          <button style={styles.backButton} onClick={() => navigate(-1)}>←</button>
 
-            <h2>Autres films</h2>
-            <div style={styles.moviesGrid}>
-              {allMovies
-                .filter(m => m.id !== item.id)
-                .map(m => (
-                  <div
-                    key={m.id}
-                    style={styles.movieCard}
-                    onClick={() => navigate(`/detail/movie/${m.id}`)}
-                  >
+          {/* Bouton play centré pour les films */}
+          {type === "movie" && item.videoUrl && (
+            <button style={styles.playButtonCenter} onClick={() => setVideoUrl(item.videoUrl)}>▶</button>
+          )}
+        </div>
+
+        <div style={styles.container}>
+          <h1>{item.title}</h1>
+          <p>{item.description}</p>
+
+          {/* Autres films */}
+          {type === "movie" && allMovies.length > 0 && (
+            <>
+              <h2>Autres films</h2>
+              <div style={styles.moviesGrid}>
+                {allMovies.filter(m => m.id !== item.id).map(m => (
+                  <div key={m.id} style={styles.movieCard} onClick={() => navigate(`/detail/movie/${m.id}`)}>
                     <img src={m.imageUrl} alt={m.title} style={styles.movieImage} />
                     <div style={{ padding: "8px" }}>
                       <h4>{m.title}</h4>
                     </div>
                   </div>
                 ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <div style={styles.heroWrapper}>
-            <img src={item.imageUrl} alt={item.title} style={styles.hero} />
-            <button style={styles.backButton} onClick={() => navigate(-1)}>
-              ←
-            </button>
-          </div>
-          <div style={styles.container}>
-            <h1>{item.title}</h1>
-            <p>{item.description}</p>
+              </div>
+            </>
+          )}
 
-            {/* Sélecteur de saison */}
-            {item.seasons && (
+          {/* Séries avec saisons et épisodes */}
+          {type === "series" && selectedSeason?.episodes && (
+            <>
               <select
                 value={selectedSeason?.id || ""}
                 onChange={e => {
                   const season = item.seasons.find(s => s.id === e.target.value);
                   setSelectedSeason(season);
                 }}
-                style={{
-                  padding: "8px",
-                  marginBottom: "16px",
-                  background: "#1e1e1e",
-                  color: "#fff",
-                }}
+                style={{ padding: "8px", marginBottom: "10px", background: "#1e1e1e", color: "#fff", borderRadius: "6px" }}
               >
-                {item.seasons.map(season => (
-                  <option key={season.id} value={season.id}>
-                    {season.name}
-                  </option>
+                {item.seasons?.map(season => (
+                  <option key={season.id} value={season.id}>{season.name}</option>
                 ))}
               </select>
-            )}
 
-            {/* Liste des épisodes */}
-            {selectedSeason?.episodes && (
               <div>
                 <h3>Épisodes</h3>
                 {selectedSeason.episodes.map(ep => (
                   <div key={ep.id} style={styles.episodeCard}>
                     <div style={styles.episodeImageWrapper}>
                       <img src={ep.imageUrl} alt={ep.title} style={styles.episodeImage} />
-                      {ep.videoUrl && (
-                        <button
-                          style={styles.playBtnOverlay}
-                          onClick={() => setVideoUrl(ep.videoUrl)}
-                        >
-                          ▶
-                        </button>
-                      )}
+                      {ep.videoUrl && <button style={styles.playBtnOverlay} onClick={() => setVideoUrl(ep.videoUrl)}>▶</button>}
                     </div>
-                    <div>
+                    <div style={{paddingLeft:"265px", paddingTop:"40px"}}>
                       <h4>{ep.title}</h4>
                       <p>{ep.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 }
