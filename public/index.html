@@ -1,27 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+
+    <title>Streaming App</title>
+
+    <!-- Vérification de propriété -->
     <meta
-      name="description"
-      content="Web site created using create-react-app"
+      name="6a97888e-site-verification"
+      content="10bda0cf4105198a1459f30b20afa1af"
     />
-    <meta name="6a97888e-site-verification" content="10bda0cf4105198a1459f30b20afa1af">
-    <!-- Balise de vérification Adsterra -->
-    <meta name="site-verification-15830" content="2021f04123abbb294eb9f70e0acfd7ce"/>
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>React App</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>Vous devez activer JavaScript pour exécuter cette application.</noscript>
     <div id="root"></div>
 
-    <!-- Scripts Adsterra -->
-    <script type="text/javascript" src="https://cdn.diclotrans.com/sdk/v1/53464/f2ef297fea946b7293151c2d6a6144c2da85451c/lib.js"></script>
-    <script type="text/javascript" src="https://cdn.diclotrans.com/sdk/v1/53466/5a00571d176514a96e98eeff5f4fbe599cc8a506/lib.js"></script>
+    <!-- Script publicitaire -->
+    <script
+      async
+      type="application/javascript"
+      src="https://a.magsrv.com/ad-provider.js"
+    ></script>
+    <ins class="eas6a97888e17" data-zoneid="5705964"></ins>
+    <script>
+      (AdProvider = window.AdProvider || []).push({ serve: {} });
+    </script>
+
+    <!-- Vérifier si mobile ou desktop -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+
+        if (!isMobile) {
+          document.body.innerHTML =
+            "<div style='display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;font-family:sans-serif;padding:20px;'><h2>🚫 Ce site est disponible uniquement sur mobile 📱</h2></div>";
+        }
+      });
+    </script>
   </body>
 </html>
