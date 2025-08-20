@@ -13,7 +13,6 @@ export default function Home() {
   const carouselRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Charger films et séries
   useEffect(() => {
     const loadMovies = async () => {
       try {
@@ -56,10 +55,8 @@ export default function Home() {
     loadSeries();
   }, []);
 
-  // Combiner films et séries pour le carrousel avec useMemo
   const combined = useMemo(() => [...movies, ...series], [movies, series]);
 
-  // Auto-slide toutes les 3 secondes
   useEffect(() => {
     if (combined.length > 1) {
       const interval = setInterval(() => {
@@ -81,12 +78,7 @@ export default function Home() {
       transition: "transform 1s ease-in-out",
       height: "100%",
     },
-    carouselItem: {
-      minWidth: "100%",
-      height: "100%",
-      position: "relative",
-      flexShrink: 0,
-    },
+    carouselItem: { minWidth: "100%", height: "100%", position: "relative", flexShrink: 0 },
     heroImage: { width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" },
     watchButton: {
       position: "absolute",
@@ -100,19 +92,7 @@ export default function Home() {
       textDecoration: "none",
       fontWeight: "bold",
     },
-    arrow: {
-      position: "absolute",
-      top: "50%",
-      transform: "translateY(-50%)",
-      background: "rgba(0,0,0,0.5)",
-      color: "#fff",
-      border: "none",
-      fontSize: "24px",
-      padding: "8px 12px",
-      cursor: "pointer",
-      borderRadius: "50%",
-      zIndex: 10,
-    },
+    arrow: { position: "absolute", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.5)", color: "#fff", border: "none", fontSize: "24px", padding: "8px 12px", cursor: "pointer", borderRadius: "50%", zIndex: 10 },
     prevArrow: { left: "10px" },
     nextArrow: { right: "10px" },
     sectionTitle: { margin: "16px 16px 8px", color: "#fff" },
@@ -122,7 +102,12 @@ export default function Home() {
       paddingBottom: "10px",
       paddingLeft: "16px",
       paddingRight: "16px",
-      overflow: "hidden",
+      overflowX: "auto",
+      scrollbarWidth: "none", // Firefox
+      msOverflowStyle: "none", // IE 10+
+    },
+    horizontalScrollHide: {
+      '&::-webkit-scrollbar': { display: "none" }, // Chrome, Safari, Opera
     },
     card: { minWidth: "140px", flexShrink: 0, padding: "5px" },
     cardImage: { width: "140px", height: "200px", borderRadius: "8px", objectFit: "cover", cursor: "pointer" },
@@ -131,32 +116,19 @@ export default function Home() {
 
   return (
     <div style={styles.container}>
-      {/* Carrousel unique films + séries */}
+      {/* Carrousel */}
       {combined.length > 0 && (
         <div style={styles.carouselWrapper}>
-          <div
-            style={{
-              ...styles.carouselInner,
-              transform: `translateX(-${currentIndex * 100}%)`,
-            }}
-            ref={carouselRef}
-          >
+          <div style={{ ...styles.carouselInner, transform: `translateX(-${currentIndex * 100}%)` }} ref={carouselRef}>
             {combined.map(item => (
               <div key={item.id} style={styles.carouselItem}>
                 <Link to={`/detail/${item.type}/${item.id}`}>
                   <img src={item.imageUrl} alt={item.title} style={styles.heroImage} />
                 </Link>
-                <Link
-                  to={`/detail/${item.type}/${item.id}`}
-                  style={styles.watchButton}
-                >
-                  Watch Now
-                </Link>
+                <Link to={`/detail/${item.type}/${item.id}`} style={styles.watchButton}>Watch Now</Link>
               </div>
             ))}
           </div>
-
-          {/* Flèches */}
           <button onClick={goPrev} style={{ ...styles.arrow, ...styles.prevArrow }}>‹</button>
           <button onClick={goNext} style={{ ...styles.arrow, ...styles.nextArrow }}>›</button>
         </div>
@@ -167,7 +139,7 @@ export default function Home() {
       {loadingMovies ? (
         <p style={{ color: "#bbb" }}>Chargement des films...</p>
       ) : (
-        <div style={styles.horizontalScroll}>
+        <div style={{ ...styles.horizontalScroll, ...styles.horizontalScrollHide }}>
           {movies.slice(0, 10).map(movie => (
             <div key={movie.id} style={styles.card}>
               <Link to={`/detail/movie/${movie.id}`}>
@@ -184,7 +156,7 @@ export default function Home() {
       {loadingSeries ? (
         <p style={{ color: "#bbb" }}>Chargement des séries...</p>
       ) : (
-        <div style={styles.horizontalScroll}>
+        <div style={{ ...styles.horizontalScroll, ...styles.horizontalScrollHide }}>
           {series.slice(0, 10).map(serie => (
             <div key={serie.id} style={styles.card}>
               <Link to={`/detail/series/${serie.id}`}>
