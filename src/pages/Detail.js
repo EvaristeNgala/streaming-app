@@ -14,9 +14,9 @@ export default function Detail() {
   const [videoUrl, setVideoUrl] = useState(null);
   const [allMovies, setAllMovies] = useState([]);
 
-  // Charger le script pub globalement (au cas où App.js n'a pas encore monté le script)
+  // Charger le script pub **une seule fois** dès le premier rendu
   useEffect(() => {
-    if (!document.getElementById("profitableratecpm-script")) {
+    if (!window.Profitableratecpm && !document.getElementById("profitableratecpm-script")) {
       const script = document.createElement("script");
       script.id = "profitableratecpm-script";
       script.src = "//pl27464220.profitableratecpm.com/3a/31/ce/3a31ce3c4a07f92315a0d88f6ffe3c2a.js";
@@ -93,10 +93,12 @@ export default function Detail() {
     closeBtn: { position: "absolute", top: "20px", right: "20px", fontSize: "24px", color: "#fff", background: "transparent", border: "none", cursor: "pointer" },
   };
 
-  // Fonction déclencheur pub + lecture vidéo
+  // Déclenchement pub + lecture vidéo
   const handlePlay = (url) => {
-    // Déclencher la pub du script
-    if (window?.Profitableratecpm) window.Profitableratecpm();
+    // Appeler la fonction du script pub **si elle existe**
+    if (window?.Profitableratecpm) {
+      try { window.Profitableratecpm(); } catch (e) { console.error(e); }
+    }
     setVideoUrl(url);
   };
 
