@@ -14,7 +14,6 @@ export default function Films() {
     const load = async () => {
       setLoading(true);
       try {
-        // écoute tous les documents de la collection "movies"
         unsubscribe = onSnapshot(
           collection(db, "movies"),
           (snap) => {
@@ -50,7 +49,6 @@ export default function Films() {
     };
   }, []);
 
-  // recherche case-insensitive sur title et description
   const normalized = (s) => (s || "").toString().toLowerCase();
   const filtered = films.filter(
     (f) =>
@@ -60,33 +58,33 @@ export default function Films() {
 
   return (
     <div style={{ background: "#121212", minHeight: "100vh", color: "#fff", padding: 20 }}>
+      {/* Barre de recherche */}
       <div
-  style={{
-    position: "sticky",
-    top: 0,
-    zIndex: 100,
-    background: "#121212", // fond noir derrière la barre
-    padding: "10px 0",     // un peu d'espace autour de l'input
-    borderBottom: "1px solid #333" // optionnel, pour séparer visuellement
-  }}
->
-  <input
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    placeholder="Rechercher un film..."
-    style={{
-      width: "95%",
-      padding: "10px 12px",
-      margin: "0 auto",
-      display: "block",
-      borderRadius: 8,
-      border: "1px solid #333",
-      background: "#1f1f1f",
-      color: "#fff",
-    }}
-  />
-</div>
-
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+          background: "#121212",
+          padding: "10px 0",
+          borderBottom: "1px solid #333"
+        }}
+      >
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Rechercher un film..."
+          style={{
+            width: "95%",
+            padding: "10px 12px",
+            margin: "0 auto",
+            display: "block",
+            borderRadius: 8,
+            border: "1px solid #333",
+            background: "#1f1f1f",
+            color: "#fff",
+          }}
+        />
+      </div>
 
       {loading ? (
         <p style={{ color: "#bbb" }}>Chargement…</p>
@@ -96,7 +94,7 @@ export default function Films() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+            gridTemplateColumns: "repeat(2, 1fr)", // 🔥 forcer 2 colonnes minimum
             gap: 16,
           }}
         >
