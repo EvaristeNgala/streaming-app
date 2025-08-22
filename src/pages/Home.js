@@ -1,8 +1,8 @@
+// src/pages/Home.js
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import AdBanner from "../components/AdBanner";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
@@ -73,7 +73,11 @@ export default function Home() {
   const styles = {
     container: { backgroundColor: "#121212", minHeight: "100vh", overflowX: "hidden" },
     carouselWrapper: { position: "relative", width: "100%", height: "300px", overflow: "hidden" },
-    carouselInner: { display: "flex", transition: "transform 1s ease-in-out", height: "100%" },
+    carouselInner: {
+      display: "flex",
+      transition: "transform 1s ease-in-out",
+      height: "100%",
+    },
     carouselItem: { minWidth: "100%", height: "100%", position: "relative", flexShrink: 0 },
     heroImage: { width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" },
     watchButton: {
@@ -88,19 +92,7 @@ export default function Home() {
       textDecoration: "none",
       fontWeight: "bold",
     },
-    arrow: {
-      position: "absolute",
-      top: "50%",
-      transform: "translateY(-50%)",
-      background: "rgba(0,0,0,0.5)",
-      color: "#fff",
-      border: "none",
-      fontSize: "24px",
-      padding: "8px 12px",
-      cursor: "pointer",
-      borderRadius: "50%",
-      zIndex: 10,
-    },
+    arrow: { position: "absolute", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.5)", color: "#fff", border: "none", fontSize: "24px", padding: "8px 12px", cursor: "pointer", borderRadius: "50%", zIndex: 10 },
     prevArrow: { left: "10px" },
     nextArrow: { right: "10px" },
     sectionTitle: { margin: "16px 16px 8px", color: "#fff" },
@@ -111,10 +103,12 @@ export default function Home() {
       paddingLeft: "16px",
       paddingRight: "16px",
       overflowX: "auto",
-      scrollbarWidth: "none",
-      msOverflowStyle: "none",
+      scrollbarWidth: "none", // Firefox
+      msOverflowStyle: "none", // IE 10+
     },
-    horizontalScrollHide: { '&::-webkit-scrollbar': { display: "none" } },
+    horizontalScrollHide: {
+      '&::-webkit-scrollbar': { display: "none" }, // Chrome, Safari, Opera
+    },
     card: { minWidth: "140px", flexShrink: 0, padding: "5px" },
     cardImage: { width: "140px", height: "200px", borderRadius: "8px", objectFit: "cover", cursor: "pointer" },
     cardTitle: { marginTop: "4px", fontSize: "12px", color: "#fff", textAlign: "center" },
@@ -140,9 +134,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* PUB Native Banner sous carrousel */}
-      <AdBanner containerId="ad-home-top" />
-
       {/* Films populaires */}
       <h2 style={styles.sectionTitle}>Films populaires</h2>
       {loadingMovies ? (
@@ -160,9 +151,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* PUB Native Banner entre films et séries */}
-      <AdBanner containerId="ad-home-middle" />
-
       {/* Séries populaires */}
       <h2 style={styles.sectionTitle}>Séries populaires</h2>
       {loadingSeries ? (
@@ -179,9 +167,6 @@ export default function Home() {
           ))}
         </div>
       )}
-
-      {/* PUB Native Banner Footer */}
-      <AdBanner containerId="ad-home-bottom" />
     </div>
   );
 }
