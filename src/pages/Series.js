@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
+import AdBanner from "../components/AdBanner";
 
 export default function Series() {
   const [series, setSeries] = useState([]);
@@ -20,7 +21,6 @@ export default function Series() {
           collection(db, "series"),
           (snap) => {
             const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            console.log("series snapshot:", list);
             setSeries(list);
             setLoading(false);
           },
@@ -34,7 +34,6 @@ export default function Series() {
         try {
           const snap = await getDocs(collection(db, "series"));
           const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-          console.log("series getDocs fallback:", list);
           setSeries(list);
         } catch (e) {
           console.error("getDocs fallback error:", e);
@@ -45,7 +44,6 @@ export default function Series() {
     };
 
     loadSeries();
-
     return () => {
       if (typeof unsubscribe === "function") unsubscribe();
     };
@@ -59,7 +57,11 @@ export default function Series() {
   );
 
   return (
-    <div style={{ background: "#121212", minHeight: "100vh", color: "#fff", padding: 20 }}>
+    <div style={{ background: "#121212", minHeight: "100vh", color: "#fff", paddingBottom: 20 }}>
+      {/* PUB Top */}
+      <AdBanner containerId="ad-series-top" />
+
+      {/* Barre de recherche sticky */}
       <div
         style={{
           position: "sticky",
@@ -87,74 +89,80 @@ export default function Series() {
       </div>
 
       {loading ? (
-        <p style={{ color: "#bbb" }}>Chargement…</p>
+        <p style={{ color: "#bbb", padding: 16 }}>Chargement…</p>
       ) : filtered.length === 0 ? (
-        <p style={{ color: "#bbb" }}>Aucune série trouvée.</p>
+        <p style={{ color: "#bbb", padding: 16 }}>Aucune série trouvée.</p>
       ) : (
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
             gap: 16,
-            marginTop: 10,
+            padding: 16,
           }}
         >
-          {filtered.map((serie) => (
-            <article
-              key={serie.id}
-              style={{
-                background: "#181818",
-                borderRadius: 8,
-                overflow: "hidden",
-                cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
-              }}
-              onClick={() => navigate(`/detail/series/${serie.id}`)}
-            >
-              <div style={{ width: "100%", height: 220, background: "#222" }}>
-                {serie.imageUrl ? (
-                  <img
-                    src={serie.imageUrl}
-                    alt={serie.title || "poster"}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                ) : (
-                  <div
+          {filtered.map((serie, index) => (
+            <React.Fragment key={serie.id}>
+              {/* PUB milieu tous les 6 séries */}
+              {index > 0 && index % 6 === 0 && <AdBanner containerId={`ad-series-middle-${index}`} />}
+              <article
+                style={{
+                  background: "#181818",
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                }}
+                onClick={() => navigate(`/detail/series/${serie.id}`)}
+              >
+                <div style={{ width: "100%", height: 220, background: "#222" }}>
+                  {serie.imageUrl ? (
+                    <img
+                      src={serie.imageUrl}
+                      alt={serie.title || "poster"}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#888",
+                      }}
+                    >
+                      Pas d'image
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ padding: 10 }}>
+                  <h3
                     style={{
-                      width: "100%",
-                      height: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#888",
+                      margin: 0,
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#fff",
+                      textTransform: "capitalize",
                     }}
                   >
-                    Pas d'image
-                  </div>
-                )}
-              </div>
-
-              <div style={{ padding: 10 }}>
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#fff",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {serie.title || "Titre inconnu"}
-                </h3>
-                <p style={{ margin: "6px 0 0", fontSize: 12, color: "#bbb" }}>
-                  {serie.genre || ""}
-                  {serie.year ? ` • ${serie.year}` : ""}
-                </p>
-              </div>
-            </article>
+                    {serie.title || "Titre inconnu"}
+                  </h3>
+                  <p style={{ margin: "6px 0 0", fontSize: 12, color: "#bbb" }}>
+                    {serie.genre || ""}
+                    {serie.year ? ` • ${serie.year}` : ""}
+                  </p>
+                </div>
+              </article>
+            </React.Fragment>
           ))}
         </div>
       )}
+
+      {/* PUB Footer */}
+      <AdBanner containerId="ad-series-bottom" />
     </div>
   );
 }
