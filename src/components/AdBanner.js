@@ -1,3 +1,4 @@
+// src/components/AdBanner.js
 import React, { useEffect } from "react";
 
 const AdBanner = () => {
@@ -14,8 +15,8 @@ const AdBanner = () => {
   }, []);
 
   return (
-    <div style={{ margin: "20px auto", textAlign: "center" }}>
-      <div id="container-cbf1e75f4094c3e9d246f6ec35a8072c"></div>
+    <div style={{ width: "100%", height: "100px", margin: "10px 0", textAlign: "center" }}>
+      <div id="container-cbf1e75f4094c3e9d246f6ec35a8072c" style={{ width: "100%", height: "100%" }}></div>
     </div>
   );
 };
