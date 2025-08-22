@@ -140,7 +140,7 @@ export default function Home() {
         <p style={{ color: "#bbb" }}>Chargement des films...</p>
       ) : (
         <div style={{ ...styles.horizontalScroll, ...styles.horizontalScrollHide }}>
-          {movies.slice(0, 10).map(movie => (
+          {movies.slice(0, 4).map(movie => (   // 🔥 Limité à 4 films
             <div key={movie.id} style={styles.card}>
               <Link to={`/detail/movie/${movie.id}`}>
                 <img src={movie.imageUrl} alt={movie.title} style={styles.cardImage} />
@@ -157,7 +157,7 @@ export default function Home() {
         <p style={{ color: "#bbb" }}>Chargement des séries...</p>
       ) : (
         <div style={{ ...styles.horizontalScroll, ...styles.horizontalScrollHide }}>
-          {series.slice(0, 10).map(serie => (
+          {series.slice(0, 4).map(serie => (   // 🔥 Limité à 4 séries
             <div key={serie.id} style={styles.card}>
               <Link to={`/detail/series/${serie.id}`}>
                 <img src={serie.imageUrl} alt={serie.title} style={styles.cardImage} />
