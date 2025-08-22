@@ -1,9 +1,8 @@
-// src/pages/Home.js
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import AdBanner from "../components/AdBanner"; // <-- Import du composant pub
+import AdBanner from "../components/AdBanner";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
