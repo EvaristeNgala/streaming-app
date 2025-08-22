@@ -96,16 +96,25 @@ export default function Home() {
     prevArrow: { left: "10px" },
     nextArrow: { right: "10px" },
     sectionTitle: { margin: "16px 16px 8px", color: "#fff" },
+
+    /* ⬇️ Conteneur de liste : scroll horizontal + no wrap + scroll tactile iOS + barre cachée */
     horizontalScroll: {
       display: "flex",
+      flexWrap: "nowrap",              // empêche le retour à la ligne
       gap: "8px",
       paddingBottom: "10px",
       paddingLeft: "16px",
       paddingRight: "16px",
       overflowX: "auto",
-      scrollbarWidth: "none", // Firefox
-      msOverflowStyle: "none", // IE et Edge
+      overflowY: "hidden",
+      scrollbarWidth: "none",          // Firefox (barre cachée)
+      msOverflowStyle: "none",         // IE/Edge (barre cachée)
+      WebkitOverflowScrolling: "touch",// inertie iOS
+      touchAction: "pan-x",            // autorise le slide horizontal au doigt
+      scrollBehavior: "smooth",        // défilement doux (optionnel)
+      width: "100%",
     },
+
     card: { minWidth: "140px", flexShrink: 0, padding: "5px" },
     cardImage: { width: "140px", height: "200px", borderRadius: "8px", objectFit: "cover", cursor: "pointer" },
     cardTitle: { marginTop: "4px", fontSize: "12px", color: "#fff", textAlign: "center" },
@@ -137,7 +146,7 @@ export default function Home() {
         <p style={{ color: "#bbb" }}>Chargement des films...</p>
       ) : (
         <div style={styles.horizontalScroll} className="hide-scrollbar">
-          {movies.slice(0, 5).map(movie => (  // tu peux scroller tous les films
+          {movies.slice(0, 5).map(movie => (
             <div key={movie.id} style={styles.card}>
               <Link to={`/detail/movie/${movie.id}`}>
                 <img src={movie.imageUrl} alt={movie.title} style={styles.cardImage} />
@@ -154,7 +163,7 @@ export default function Home() {
         <p style={{ color: "#bbb" }}>Chargement des séries...</p>
       ) : (
         <div style={styles.horizontalScroll} className="hide-scrollbar">
-          {series.slice(0, 5).map(serie => (  // tu peux scroller toutes les séries
+          {series.slice(0, 5).map(serie => (
             <div key={serie.id} style={styles.card}>
               <Link to={`/detail/series/${serie.id}`}>
                 <img src={serie.imageUrl} alt={serie.title} style={styles.cardImage} />
