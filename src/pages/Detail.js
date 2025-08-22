@@ -14,11 +14,11 @@ export default function Detail() {
   const [videoUrl, setVideoUrl] = useState(null);
   const [allMovies, setAllMovies] = useState([]);
 
+  // Charger les données depuis Firebase
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (type === "movie") {
-          // Film
           const docRef = doc(db, "movies", id);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) setItem({ id: docSnap.id, ...docSnap.data() });
@@ -26,7 +26,6 @@ export default function Detail() {
           const moviesSnap = await getDocs(collection(db, "movies"));
           setAllMovies(moviesSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
         } else if (type === "series") {
-          // Série
           const snap = await getDocs(collection(db, "series"));
           const seriesList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 
@@ -48,12 +47,9 @@ export default function Detail() {
           });
 
           if (!found) {
-            // Si l'id correspond à la série entière
             const seriesItem = seriesList.find((s) => s.id === id) || null;
             setItem(seriesItem);
-            if (seriesItem?.seasons?.length > 0) {
-              setSelectedSeason(seriesItem.seasons[0]);
-            }
+            if (seriesItem?.seasons?.length > 0) setSelectedSeason(seriesItem.seasons[0]);
           }
         }
       } catch (err) {
@@ -71,81 +67,27 @@ export default function Detail() {
   const styles = {
     heroWrapper: { position: "relative", width: "100%", height: "300px", overflow: "hidden" },
     hero: { width: "100%", height: "100%", objectFit: "cover", display: "block" },
-    backButton: {
-      position: "absolute",
-      top: "16px",
-      right: "16px",
-      padding: "10px",
-      background: "rgba(0,0,0,0.6)",
-      color: "#fff",
-      border: "none",
-      borderRadius: "50%",
-      cursor: "pointer",
-      fontSize: "18px",
-    },
-    playButtonCenter: {
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      background: "rgba(0,0,0,0.6)",
-      border: "none",
-      borderRadius: "50%",
-      width: "64px",
-      height: "64px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-      fontSize: "28px",
-      color: "#fff",
-    },
-    container: { color: "#fff", backgroundColor: "#121212", minHeight: "100vh", padding: "10px", paddingTop: "-20px" },
+    backButton: { position: "absolute", top: "16px", right: "16px", padding: "10px", background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", cursor: "pointer", fontSize: "18px" },
+    playButtonCenter: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", background: "rgba(0,0,0,0.6)", border: "none", borderRadius: "50%", width: "64px", height: "64px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "28px", color: "#fff" },
+    container: { color: "#fff", backgroundColor: "#121212", minHeight: "100vh", padding: "10px" },
     moviesGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "20px" },
     movieCard: { background: "#1e1e1e", borderRadius: "8px", overflow: "hidden", cursor: "pointer" },
     movieImage: { width: "100%", height: "180px", objectFit: "cover", display: "block" },
-    episodeCard: {
-      display: "flex",
-      alignItems: "center",
-      background: "#1e1e1e",
-      margin: "12px 0",
-      borderRadius: "8px",
-      padding: "10px",
-      position: "relative",
-    },
+    episodeCard: { display: "flex", alignItems: "center", background: "#1e1e1e", margin: "12px 0", borderRadius: "8px", padding: "10px", position: "relative" },
     episodeImageWrapper: { position: "relative", width: "150px", height: "100px", flexShrink: 0, marginRight: "12px" },
     episodeImage: { width: "100%", height: "100%", objectFit: "cover", borderRadius: "6px" },
-    playBtnOverlay: {
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      background: "rgba(0,0,0,0.6)",
-      border: "none",
-      borderRadius: "50%",
-      width: "48px",
-      height: "48px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-      fontSize: "20px",
-      color: "#fff",
-    },
-    modal: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      background: "rgba(0,0,0,0.8)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 1000,
-    },
+    playBtnOverlay: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", background: "rgba(0,0,0,0.6)", border: "none", borderRadius: "50%", width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "20px", color: "#fff" },
+    modal: { position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.8)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 },
     video: { width: "80%", height: "70%", background: "#000" },
     closeBtn: { position: "absolute", top: "20px", right: "20px", fontSize: "24px", color: "#fff", background: "transparent", border: "none", cursor: "pointer" },
+  };
+
+  // Fonction déclencheur pub + lecture vidéo
+  const handlePlay = (url) => {
+    // Déclencher la pub du script (si disponible)
+    if (window?.Profitableratecpm) window.Profitableratecpm(); // adapter selon le script exact
+    // Ouvrir la vidéo
+    setVideoUrl(url);
   };
 
   return (
@@ -169,9 +111,8 @@ export default function Detail() {
           <img src={item.imageUrl} alt={item.title} style={styles.hero} />
           <button style={styles.backButton} onClick={() => navigate(-1)}>←</button>
 
-          {/* Bouton play centré pour les films */}
           {type === "movie" && item.videoUrl && (
-            <button style={styles.playButtonCenter} onClick={() => setVideoUrl(item.videoUrl)}>▶</button>
+            <button style={styles.playButtonCenter} onClick={() => handlePlay(item.videoUrl)}>▶</button>
           )}
         </div>
 
@@ -179,7 +120,6 @@ export default function Detail() {
           <h1>{item.title}</h1>
           <p>{item.description}</p>
 
-          {/* Autres films */}
           {type === "movie" && allMovies.length > 0 && (
             <>
               <h2>Autres films</h2>
@@ -196,15 +136,11 @@ export default function Detail() {
             </>
           )}
 
-          {/* Séries avec saisons et épisodes */}
           {type === "series" && selectedSeason?.episodes && (
             <>
               <select
                 value={selectedSeason?.id || ""}
-                onChange={e => {
-                  const season = item.seasons.find(s => s.id === e.target.value);
-                  setSelectedSeason(season);
-                }}
+                onChange={e => setSelectedSeason(item.seasons.find(s => s.id === e.target.value))}
                 style={{ padding: "8px", marginBottom: "10px", background: "#1e1e1e", color: "#fff", borderRadius: "6px" }}
               >
                 {item.seasons?.map(season => (
@@ -218,9 +154,9 @@ export default function Detail() {
                   <div key={ep.id} style={styles.episodeCard}>
                     <div style={styles.episodeImageWrapper}>
                       <img src={ep.imageUrl} alt={ep.title} style={styles.episodeImage} />
-                      {ep.videoUrl && <button style={styles.playBtnOverlay} onClick={() => setVideoUrl(ep.videoUrl)}>▶</button>}
+                      {ep.videoUrl && <button style={styles.playBtnOverlay} onClick={() => handlePlay(ep.videoUrl)}>▶</button>}
                     </div>
-                    <div style={{paddingLeft:"265px", paddingTop:"40px"}}>
+                    <div style={{ paddingLeft:"265px", paddingTop:"40px" }}>
                       <h4>{ep.title}</h4>
                       <p>{ep.description}</p>
                     </div>

@@ -1,5 +1,5 @@
 // src/App.js
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // ✅ Assure-toi que les fichiers exportent par défaut le composant
@@ -12,9 +12,20 @@ import Register from "./pages/Register";
 import Detail from "./pages/Detail";
 
 function App() {
+  // Charger le script publicitaire globalement
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "//pl27464220.profitableratecpm.com/3a/31/ce/3a31ce3c4a07f92315a0d88f6ffe3c2a.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <Router>
-      {/* paddingBottom pour que le footer ne cache pas le contenu */}
       <div style={{ paddingBottom: "60px" }}> 
         <Routes>
           <Route path="/" element={<Home />} />
@@ -26,7 +37,6 @@ function App() {
         </Routes>
       </div>
 
-      {/* Footer mobile */}
       <BottomNav />
     </Router>
   );
