@@ -104,10 +104,7 @@ export default function Home() {
       paddingRight: "16px",
       overflowX: "auto",
       scrollbarWidth: "none", // Firefox
-      msOverflowStyle: "none", // IE 10+
-    },
-    horizontalScrollHide: {
-      '&::-webkit-scrollbar': { display: "none" }, // Chrome, Safari, Opera
+      msOverflowStyle: "none", // IE et Edge
     },
     card: { minWidth: "140px", flexShrink: 0, padding: "5px" },
     cardImage: { width: "140px", height: "200px", borderRadius: "8px", objectFit: "cover", cursor: "pointer" },
@@ -139,8 +136,8 @@ export default function Home() {
       {loadingMovies ? (
         <p style={{ color: "#bbb" }}>Chargement des films...</p>
       ) : (
-        <div style={{ ...styles.horizontalScroll, ...styles.horizontalScrollHide }}>
-          {movies.slice(0, 4).map(movie => (   // 🔥 Limité à 4 films
+        <div style={styles.horizontalScroll} className="hide-scrollbar">
+          {movies.slice(0, 5).map(movie => (  // tu peux scroller tous les films
             <div key={movie.id} style={styles.card}>
               <Link to={`/detail/movie/${movie.id}`}>
                 <img src={movie.imageUrl} alt={movie.title} style={styles.cardImage} />
@@ -156,8 +153,8 @@ export default function Home() {
       {loadingSeries ? (
         <p style={{ color: "#bbb" }}>Chargement des séries...</p>
       ) : (
-        <div style={{ ...styles.horizontalScroll, ...styles.horizontalScrollHide }}>
-          {series.slice(0, 4).map(serie => (   // 🔥 Limité à 4 séries
+        <div style={styles.horizontalScroll} className="hide-scrollbar">
+          {series.slice(0, 5).map(serie => (  // tu peux scroller toutes les séries
             <div key={serie.id} style={styles.card}>
               <Link to={`/detail/series/${serie.id}`}>
                 <img src={serie.imageUrl} alt={serie.title} style={styles.cardImage} />
