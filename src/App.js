@@ -9,6 +9,7 @@ import Series from "./pages/Series";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Detail from "./pages/Detail";
+import AdBanner from "./components/AdBanner";
 
 function App() {
   // Charger le script pub globalement (une seule fois)
@@ -33,6 +34,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/detail/:type/:id" element={<Detail />} /> 
         </Routes>
+        <AdBanner />
       </div>
       <BottomNav />
     </Router>
