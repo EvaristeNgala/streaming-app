@@ -14,6 +14,17 @@ export default function Detail() {
   const [videoUrl, setVideoUrl] = useState(null);
   const [allMovies, setAllMovies] = useState([]);
 
+  // Charger le script pub globalement (au cas où App.js n'a pas encore monté le script)
+  useEffect(() => {
+    if (!document.getElementById("profitableratecpm-script")) {
+      const script = document.createElement("script");
+      script.id = "profitableratecpm-script";
+      script.src = "//pl27464220.profitableratecpm.com/3a/31/ce/3a31ce3c4a07f92315a0d88f6ffe3c2a.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   // Charger les données depuis Firebase
   useEffect(() => {
     const fetchData = async () => {
@@ -84,9 +95,8 @@ export default function Detail() {
 
   // Fonction déclencheur pub + lecture vidéo
   const handlePlay = (url) => {
-    // Déclencher la pub du script (si disponible)
-    if (window?.Profitableratecpm) window.Profitableratecpm(); // adapter selon le script exact
-    // Ouvrir la vidéo
+    // Déclencher la pub du script
+    if (window?.Profitableratecpm) window.Profitableratecpm();
     setVideoUrl(url);
   };
 
